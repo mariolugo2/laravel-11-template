@@ -20,11 +20,22 @@ use App\Http\Controllers\UbuntuController;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\YoutubeController;
 use App\Http\Middleware\FileManagerPermission;
+use App\Http\Controllers\RifaController;
 use Illuminate\Support\Facades\Route;
 
 # DASHBOARD
 Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 Route::post('dashboard', [DashboardController::class, 'post']);
+
+# RIFAS
+Route::get('/rifas', [RifaController::class, 'index'])->name('rifas.index');
+Route::get('/rifas/create', [RifaController::class, 'create'])->name('rifas.create');
+Route::post('/rifas', [RifaController::class, 'store'])->name('rifas.store');
+Route::get('/rifas/{rifa}', [RifaController::class, 'show'])->name('rifas.show');
+//Route::get('/rifas/{rifa}/imprimir', [RifaController::class, 'imprimir'])->name('rifas.imprimir');
+Route::get('/rifas/{rifa}/print', [RifaController::class, 'print'])->name('rifas.print');
+Route::get('/rifas/{rifa}/imprimir', [RifaController::class, 'imprimirVista'])->name('rifas.imprimir.vista');
+Route::get('/rifas/{rifa}/imprimir/pdf', [RifaController::class, 'imprimirPDF'])->name('rifas.imprimir.pdf');
 
 # SETTINGS
 Route::get('settings/all', [SettingController::class, 'allSetting'])->name('settings.all');
