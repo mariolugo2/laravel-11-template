@@ -23,6 +23,16 @@ use App\Http\Middleware\FileManagerPermission;
 use App\Http\Controllers\RifaController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('imagen/{image}', function ($image) {
+    $path = storage_path("app/public/avatars/{$image}");
+
+    if (file_exists($path)) {
+        return response()->file($path);
+    }
+
+    abort(404);
+});
+
 # DASHBOARD
 Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 Route::post('dashboard', [DashboardController::class, 'post']);

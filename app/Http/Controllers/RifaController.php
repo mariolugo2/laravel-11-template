@@ -135,6 +135,15 @@ class RifaController extends Controller
         $pdf = Pdf::loadView('stisla.rifas.boletos_pdf', compact('rifa'))
         ->setPaper('letter', 'portrait'); // Cambiar a orientación vertical
 
+        $pdf->setOptions([
+            'isHtml5ParserEnabled' => true,
+            'isPhpEnabled' => true,
+            'isHtml5ParserEnabled' => true,
+            'isFontSubsettingEnabled' => true,
+            'isSvgImagesEnabled' => true, // Para imágenes SVG, si es necesario
+            'isCurlEnabled' => true // Para habilitar la carga de imágenes externas
+        ]);
+
         return $pdf->download("boletos_rifa_{$rifa->lote}.pdf");
     }
 

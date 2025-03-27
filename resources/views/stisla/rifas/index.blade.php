@@ -1,4 +1,4 @@
-@extends('stisla.layouts.app')
+@extends('stisla.layouts.app-table')
 
 @section('title')
   {{ $title }}
@@ -32,7 +32,7 @@
           </div>
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table table-striped">
+              <table class="table table-striped" id="datatable">
                 <thead>
                   <tr>
                     <th>ID</th>
@@ -64,9 +64,15 @@
                 </tbody>
               </table>
             </div>
-         
+          </div>
         </div>
       </div>
     </div>
   </div>
 @endsection
+
+@push('scripts')
+<script>
+ 
+</script>
+@endpush
