@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Rifa;
 use App\Models\Boleto;
 use App\Jobs\GenerarBoletosJob;
+use App\Jobs\GenerarPDFBoletosJob;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB; // Importar la fachada DB
 use Illuminate\Support\Str;         // Importar Str para generar códigos
@@ -27,8 +28,16 @@ class RifaController extends Controller
 
     public function create()
     {
-        return view('stisla.rifas.create');
+        // Genera el número secuencial (ej: 0001, 0002...)
+        $ultimoLote = Rifa::latest()->first();
+        $numero = $ultimoLote ? str_pad((int)explode('-', $ultimoLote->lote)[1] + 1, 4, '0', STR_PAD_LEFT) : '0001';
+
+        // Formato: R-0001-240531 (R-NÚMERO-FECHA)
+        $loteAuto = 'R-' . $numero . '-' . now()->format('ymd');
+
+        return view('stisla.rifas.create', compact('loteAuto'));
     }
+
 
     public function store2(Request $request)
     {
@@ -128,16 +137,28 @@ class RifaController extends Controller
         return view('stisla.rifas.boletos_preview', compact('rifa'));
     }
 
+    
+
+     // Generar y descargar PDF
+     public function imprimirPDF(Rifa $rifa)
+     {
+        GenerarPDFBoletosJob::dispatch($rifa, auth()->user())
+    ->onQueue('pdf')
+    ->delay(now()->addSeconds(10)); // Opcional: retraso inicial
+    return redirect()->route('rifas.index')->with('successMessage', 'Se genero pdf con exito. Ya puede consultarlo.');
+
+     }
+
     // Generar y descargar PDF
-    public function imprimirPDF(Rifa $rifa)
+    public function imprimirPDFv1(Rifa $rifa)
     {
         $pdf = Pdf::loadView('stisla.rifas.boletos_pdf', compact('rifa'))
             ->setPaper('letter', 'portrait'); // Cambiar a orientación vertical
 
-            $pdf->getDomPDF()->set_option('enable_html5_parser', true);
-            $pdf->getDomPDF()->set_option('isPhpEnabled', true);
-            $pdf->getDomPDF()->set_option('isHtml5ParserEnabled', true);
-            $pdf->getDomPDF()->set_option('isRemoteEnabled', true);
+        $pdf->getDomPDF()->set_option('enable_html5_parser', true);
+        $pdf->getDomPDF()->set_option('isPhpEnabled', true);
+        $pdf->getDomPDF()->set_option('isHtml5ParserEnabled', true);
+        $pdf->getDomPDF()->set_option('isRemoteEnabled', true);
 
         return $pdf->download("boletos_rifa_{$rifa->lote}.pdf");
     }

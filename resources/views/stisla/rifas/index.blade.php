@@ -50,7 +50,7 @@
                       <td>{{ $rifa->id }}</td>
                       <td>{{ $rifa->fecha }}</td>
                       <td>{{ $rifa->lote }}</td>
-                      <td>{{ $rifa->generado_por }}</td>
+                      <td>{{ $rifa->usuario->name }}</td>
                       <td>{{ $rifa->cantidad_boletos }}</td>
                       <td>{{ $rifa->estado }}</td>
                       <td>

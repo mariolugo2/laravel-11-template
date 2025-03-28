@@ -40,11 +40,24 @@
       justify-content: center;
       font-size: 10px;
       color: white;
-      background-image: url("{{ asset('storage/firmas/boleto.png') }}");
+      /*background-image: url("{{ asset('storage/firmas/boleto.png') }}");*/
+      /*background-image: url("{{ storage_path('app/public/firmas/boleto.png') }}");*/
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
     }
+
+    .contenido-boleto {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 15px;
+    box-sizing: border-box;
+    color: white; /* Ajusta el color según tu imagen */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Opcional: sombra para mejor legibilidad */
+}
 
     .boleto h3 {
       font-size: 14px;
@@ -108,7 +121,14 @@
       <div class="container">
         @foreach ($grupoBoletos as $boleto)
           <div class="boleto">
-            <!-- El fondo del boleto ahora será la imagen especificada en el CSS -->
+           <div class="contenido-boleto">
+                <!-- Aquí va todo el contenido que quieres mostrar sobre la imagen -->
+                <h3>{{ $rifa->nombre }}</h3>
+                <p>Número: <strong>{{ $boleto->numero }}</strong></p>
+                <p>Lote: {{ $rifa->lote }}</p>
+                <p>Fecha: {{ $rifa->fecha }}</p>
+                <!-- Agrega más información según necesites -->
+            </div>
           </div>
         @endforeach
       </div>

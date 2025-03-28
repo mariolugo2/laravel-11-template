@@ -30,12 +30,31 @@
               @csrf
               <div class="form-group">
                 <label>{{ __('Fecha de la Rifa') }}</label>
-                <input type="date" name="fecha" class="form-control" required>
-              </div>
-              <div class="form-group">
-                <label>{{ __('Lote') }}</label>
-                <input type="text" name="lote" class="form-control" required>
-              </div>
+                <input 
+                    type="date" 
+                    name="fecha" 
+                    class="form-control" 
+                    value="{{ now()->toDateString() }}"  
+                    min="{{ now()->toDateString() }}"    
+                    required
+                >
+            </div>
+            <div class="form-group">
+              <label>{{ __('Lote') }}</label>
+              <input 
+                  type="text" 
+                  name="lote" 
+                  class="form-control" 
+                  value="{{ $loteAuto ?? old('lote') }}" 
+                  pattern="R-\d{4}-\d{6}" 
+                  title="Formato: R-0001-240328 (R-Número-Fecha)" 
+                  required
+                  readonly
+              >
+              <small class="form-text text-muted">
+                  Formato automático: R-0001-{{ now()->format('ymd') }}
+              </small>
+          </div>
               <div class="form-group">
                 <label>{{ __('Cantidad de Boletos') }}</label>
                 <input type="number" name="cantidad_boletos" class="form-control" required>

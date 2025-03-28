@@ -14,4 +14,9 @@ class Rifa extends Model
     {
         return $this->hasMany(Boleto::class);
     }
+
+    public function usuario()
+    {
+        return $this->belongsTo(User::class, 'generado_por');
+    }
 }
