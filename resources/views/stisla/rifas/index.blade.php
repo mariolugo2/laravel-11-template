@@ -40,6 +40,7 @@
                     <th>Lote</th>
                     <th>Generado por</th>
                     <th>Boletos</th>
+                    <th>Estado</th>
                     <th>Acciones</th>
                   </tr>
                 </thead>
@@ -51,6 +52,7 @@
                       <td>{{ $rifa->lote }}</td>
                       <td>{{ $rifa->generado_por }}</td>
                       <td>{{ $rifa->cantidad_boletos }}</td>
+                      <td>{{ $rifa->estado }}</td>
                       <td>
                         <a href="{{ route('rifas.show', $rifa->id) }}" class="btn btn-info btn-sm">
                           <i class="fa fa-eye"></i> Ver
@@ -73,6 +75,6 @@
 
 @push('scripts')
 <script>
- 
+
 </script>
 @endpush

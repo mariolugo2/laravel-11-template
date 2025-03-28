@@ -192,21 +192,21 @@
           @else
             <figure class="avatar mr-2 bg-success text-white" data-initial="{{ \App\Helpers\StringHelper::acronym(Auth::user()->name, 2) }}"></figure>
           @endif
-          <div class="d-sm-none d-lg-inline-block">{{ __('Hai') }}, {{ Auth::user()->name }}</div>
+          <div class="d-sm-none d-lg-inline-block">{{ __('Usuario') }}, {{ Auth::user()->name }}</div>
         </a>
         <div class="dropdown-menu dropdown-menu-right">
-          <div class="dropdown-title">{{ __('Waktu masuk') }}
+          <div class="dropdown-title">{{ __('Ultimo inicio') }}
             <br>{{ Auth::user()->last_login }}
           </div>
 
           @if (auth()->user()->can('Profil'))
             <a href="{{ route('profile.index') }}" class="dropdown-item has-icon">
-              <i class="far fa-user"></i> {{ __('Profil') }}
+              <i class="far fa-user"></i> {{ __('Perfil') }}
             </a>
           @endif
 
           <a href="{{ route('logout') }}" class="dropdown-item has-icon text-danger">
-            <i class="fas fa-sign-out-alt"></i> Keluar
+            <i class="fas fa-sign-out-alt"></i> Salir
           </a>
         </div>
       </li>

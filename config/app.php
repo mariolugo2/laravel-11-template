@@ -22,7 +22,7 @@ return [
     'version' => '1.0.0',
     'is_demo' => env('APP_IS_DEMO', false),
     'is_heroku' => env('APP_IS_HEROKU', false),
-    'show_example_menu' => env('APP_SHOW_EXAMPLE_MENU', true),
+    'show_example_menu' => env('APP_SHOW_EXAMPLE_MENU', false),
 
     // api app key required
     'header_key' => env('APP_HEADER_KEY', null),
@@ -90,11 +90,11 @@ return [
     |
     */
 
-    'locale' => env('APP_LOCALE', 'id'),
+    'locale' => env('APP_LOCALE', 'es '),
 
-    'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
+    'fallback_locale' => env('APP_FALLBACK_LOCALE', 'es'),
 
-    'faker_locale' => env('APP_FAKER_LOCALE', 'en_US'),
+    'faker_locale' => env('APP_FAKER_LOCALE', 'es_MX'),
 
     /*
     |--------------------------------------------------------------------------

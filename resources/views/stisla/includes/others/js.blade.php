@@ -61,7 +61,7 @@
 <script>
   var SIDEBAR_MINI = false;
 </script>
-<script src="{{ asset('stisla/assets/js/my-script.min.js?id=2') }}"></script>
+<script src="{{ asset('stisla/assets/js/my-script.min.js') }}"></script>
 
 <!-- Your custom script -->
 @stack('scripts')

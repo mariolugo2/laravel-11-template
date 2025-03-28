@@ -22,15 +22,39 @@ use App\Http\Controllers\YoutubeController;
 use App\Http\Middleware\FileManagerPermission;
 use App\Http\Controllers\RifaController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Response;
 
-Route::get('imagen/{image}', function ($image) {
-    $path = storage_path("app/public/avatars/{$image}");
+Route::get('storage/firmas/{filename}', function ($filename) {
+    $path = storage_path('app/public/firmas/'.$filename);
 
-    if (file_exists($path)) {
-        return response()->file($path);
+    if (!File::exists($path)) {
+        abort(404);
     }
 
-    abort(404);
+    $file = File::get($path);
+    $type = File::mimeType($path);
+
+    $response = Response::make($file, 200);
+    $response->header('Content-Type', $type);
+
+    return $response;
+});
+
+Route::get('storage/pictures/{filename}', function ($filename) {
+    $path = storage_path('app/public/pictures/'.$filename);
+
+    if (!File::exists($path)) {
+        abort(404);
+    }
+
+    $file = File::get($path);
+    $type = File::mimeType($path);
+
+    $response = Response::make($file, 200);
+    $response->header('Content-Type', $type);
+
+    return $response;
 });
 
 # DASHBOARD
@@ -66,7 +90,7 @@ Route::view('pricing', 'stisla.examples.pricing.index')->name('pricing.index');
 Route::view('invoice', 'stisla.examples.invoice.index')->name('invoice.index');
 
 # PENDUDUK
-Route::resource('persons', PersonController::class);
+//Route::resource('persons', PersonController::class);
 
 # USER MANAGEMENT
 Route::prefix('user-management')->as('user-management.')->group(function () {
@@ -134,9 +158,9 @@ Route::get('notifications', [NotificationController::class, 'index'])->name('not
 Route::resource('backup-databases', BackupDatabaseController::class);
 
 # FILE MANAGER
-Route::group(['prefix' => 'file-managers', 'middleware' => [FileManagerPermission::class]], function () {
-    \UniSharp\LaravelFilemanager\Lfm::routes();
-});
+//Route::group(['prefix' => 'file-managers', 'middleware' => [FileManagerPermission::class]], function () {
+//    \UniSharp\LaravelFilemanager\Lfm::routes();
+//});
 
 # LOG VIEWER
 Route::get('logs-viewer', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index'])->name('logs.index')->middleware('can:Laravel Log Viewer');

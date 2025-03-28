@@ -5,7 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Rifa;
 use App\Models\Boleto;
+use App\Jobs\GenerarBoletosJob;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB; // Importar la fachada DB
+use Illuminate\Support\Str;         // Importar Str para generar códigos
+
 
 
 class RifaController extends Controller
@@ -51,52 +55,47 @@ class RifaController extends Controller
             ]);
         }
 
-        return redirect()->route('rifas.index')->with('success', 'Rifa creada correctamente.');
+        return redirect()->route('rifas.index')->with('successMessage', 'Rifa creada correctamente.');
     }
 
     public function store(Request $request)
     {
-        // Validar los datos de la rifa
-        //dd($request);
-        // Obtener el usuario logueado
-        $user = auth()->user(); // Esto te da el usuario autenticado
-        // Crear la rifa
-       // Crear la rifa con el usuario logueado como 'generado_por'
-       $rifa = Rifa::create([
+        $user = auth()->user();
+
+        $rifa = Rifa::create([
             'lote' => $request->lote,
             'fecha' => $request->fecha,
-            'generado_por' => $user->id, // Asignar el nombre del usuario logueado
-            'cantidad_boletos' => $request->cantidad_boletos
+            'generado_por' => $user->id,
+            'cantidad_boletos' => $request->cantidad_boletos,
+            'estado' => 'en_proceso'
+
         ]);
 
-        $numerosGenerados = []; // Array para almacenar los números generados
+        // Despachar el Job para ejecución en segundo plano
+        GenerarBoletosJob::dispatch($rifa, (int) $request->cantidad_boletos)->onQueue('boletos');
 
-        // Generar boletos aleatorios
-        for ($i = 0; $i < $request->cantidad_boletos; $i++) {
-            $numerosBoleto = [];
+        return redirect()->route('rifas.index')->with('successMessage', 'Rifa creada correctamente. Los boletos se están generando en segundo plano.');
+    }
 
-            // Generar 20 números únicos para este boleto
-            while (count($numerosBoleto) < 20) {
-                // Generar un número aleatorio de 5 dígitos
-                $numero = str_pad(rand(1, 99999), 5, '0', STR_PAD_LEFT);
 
-                // Si el número no ha sido generado antes, agregarlo
-                if (!in_array($numero, $numerosGenerados)) {
-                    $numerosBoleto[] = $numero;
-                    $numerosGenerados[] = $numero; // Añadir a la lista global
-                }
+    // Método auxiliar para generar números únicos de forma más eficiente
+    protected function generateUniqueNumbers(int $count): array
+    {
+        $numbers = [];
+        $maxAttempts = $count * 2; // Prevenir bucles infinitos
+
+        while (count($numbers) < $count && $maxAttempts-- > 0) {
+            $num = str_pad(random_int(0, 99999), 5, '0', STR_PAD_LEFT);
+            if (!in_array($num, $numbers)) {
+                $numbers[] = $num;
             }
-
-            // Crear boleto con los números generados
-            $boleto = Boleto::create([
-                'rifa_id' => $rifa->id,
-                'codigo' => strtoupper(uniqid('B')),
-                'generado_por' => $user->id, // Asignar el nombre del usuario logueado
-                'numeros' => json_encode($numerosBoleto) // Convertir el array de números a JSON
-            ]);
         }
 
-        return redirect()->route('rifas.index')->with('success', 'Rifa creada correctamente.');
+        if (count($numbers) < $count) {
+            throw new \RuntimeException('No se pudieron generar suficientes números únicos');
+        }
+
+        return $numbers;
     }
 
 
@@ -118,7 +117,7 @@ class RifaController extends Controller
     public function imprimir(Rifa $rifa)
     {
         $pdf = Pdf::loadView('stisla.rifas.rifas_boletos', compact('rifa'))
-                ->setPaper('letter', 'landscape'); // Tamaño carta horizontal
+            ->setPaper('letter', 'landscape'); // Tamaño carta horizontal
 
         return $pdf->download("boletos_rifa_{$rifa->lote}.pdf");
     }
@@ -133,18 +132,13 @@ class RifaController extends Controller
     public function imprimirPDF(Rifa $rifa)
     {
         $pdf = Pdf::loadView('stisla.rifas.boletos_pdf', compact('rifa'))
-        ->setPaper('letter', 'portrait'); // Cambiar a orientación vertical
+            ->setPaper('letter', 'portrait'); // Cambiar a orientación vertical
 
-        $pdf->setOptions([
-            'isHtml5ParserEnabled' => true,
-            'isPhpEnabled' => true,
-            'isHtml5ParserEnabled' => true,
-            'isFontSubsettingEnabled' => true,
-            'isSvgImagesEnabled' => true, // Para imágenes SVG, si es necesario
-            'isCurlEnabled' => true // Para habilitar la carga de imágenes externas
-        ]);
+            $pdf->getDomPDF()->set_option('enable_html5_parser', true);
+            $pdf->getDomPDF()->set_option('isPhpEnabled', true);
+            $pdf->getDomPDF()->set_option('isHtml5ParserEnabled', true);
+            $pdf->getDomPDF()->set_option('isRemoteEnabled', true);
 
         return $pdf->download("boletos_rifa_{$rifa->lote}.pdf");
     }
-
 }

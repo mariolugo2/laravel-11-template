@@ -15,26 +15,28 @@ function unique(array) {
 }
 
 function initDataTables() {
+
+  console.log('aquie es el codfigo');
   // datatable
   if ($('#datatable').length > 0) {
     var $dtTbl = $('#datatable');
     var options = {
       language: {
-        lengthMenu: 'Menampilkan _MENU_ baris data per halaman',
-        zeroRecords: 'Tidak ada data',
-        info: 'Menampilkan halaman _PAGE_ dari _PAGES_',
-        infoFiltered: '(filtered from _MAX_ total records)',
-        search: 'Pencarian',
+        lengthMenu: 'Mostrar _MENU_ filas por página',
+        zeroRecords: 'No se encontraron datos',
+        info: 'Mostrando página _PAGE_ de _PAGES_',
+        infoFiltered: '(filtrado de _MAX_ registros en total)',
+        search: 'Buscar',
         paginate: {
-          previous: 'Sebelumnya',
-          next: 'Selanjutnya',
+          previous: 'Anterior',
+          next: 'Siguiente',
         },
         buttons: {
           copySuccess: {
-            1: '1 baris disalin ke papanklip',
-            _: '%d baris disalin ke papanklip',
+            1: '1 fila copiada al portapapeles',
+            _: '%d filas copiadas al portapapeles',
           },
-          copyTitle: 'Salin ke papanklip',
+          copyTitle: 'Copiar al portapapeles',
         },
       },
     };
@@ -47,7 +49,7 @@ function initDataTables() {
         {
           attr: { id: 'copyDtBtn' },
           extend: 'copy',
-          text: 'Salin',
+          text: 'Copiar',
           className: 'btn-primary',
           title: title,
         },
@@ -90,7 +92,7 @@ function initDataTables() {
         {
           attr: { id: 'printDtBtn' },
           extend: 'print',
-          text: 'Cetak',
+          text: 'Imprimir',
           className: 'btn-primary',
         },
         {
@@ -117,21 +119,21 @@ function initDataTables() {
       ajax: $dtTblYajra.data('ajax-url'),
       columns: JSON.parse($('#yajraColumns').val()),
       language: {
-        lengthMenu: 'Menampilkan _MENU_ baris data per halaman',
-        zeroRecords: 'Tidak ada data',
-        info: 'Menampilkan halaman _PAGE_ dari _PAGES_',
-        infoFiltered: '(filtered from _MAX_ total records)',
-        search: 'Pencarian',
+        lengthMenu: 'Mostrar _MENU_ filas por página',
+        zeroRecords: 'No se encontraron datos',
+        info: 'Mostrando página _PAGE_ de _PAGES_',
+        infoFiltered: '(filtrado de _MAX_ registros en total)',
+        search: 'Buscar',
         paginate: {
-          previous: 'Sebelumnya',
-          next: 'Selanjutnya',
+          previous: 'Anterior',
+          next: 'Siguiente',
         },
         buttons: {
           copySuccess: {
-            1: '1 baris disalin ke papanklip',
-            _: '%d baris disalin ke papanklip',
+            1: '1 fila copiada al portapapeles',
+            _: '%d filas copiadas al portapapeles',
           },
-          copyTitle: 'Salin ke papanklip',
+          copyTitle: 'Copiar al portapapeles',
         },
       },
     };
@@ -144,7 +146,7 @@ function initDataTables() {
         {
           attr: { id: 'copyDtBtn' },
           extend: 'copy',
-          text: 'Salin',
+          text: 'Copiar',
           className: 'btn-primary',
           title: title,
         },
@@ -187,7 +189,7 @@ function initDataTables() {
         {
           attr: { id: 'printDtBtn' },
           extend: 'print',
-          text: 'Cetak',
+          text: 'Imprimir',
           className: 'btn-primary',
         },
         {
@@ -205,6 +207,7 @@ function initDataTables() {
     window.$dtTblYajra = $dtTblYajra.DataTable(options);
   }
 }
+
 
 function reloadDataTable() {
   window.$dtTblYajra.ajax.reload();
@@ -268,18 +271,21 @@ $(document).ready(function () {
     var jam = date.getHours();
     var menit = date.getMinutes();
     var pesan = '';
+    
     if (jam >= 18) {
-      if (menit >= 30) pesan = 'Selamat Malam';
-      else pesan = 'Selamat Sore';
+      if (menit >= 30) pesan = 'Buenas noches';
+      else pesan = 'Buenas tardes';
     } else if (jam >= 14) {
-      pesan = 'Selamat Sore';
+      pesan = 'Buenas tardes';
     } else if (jam >= 10) {
-      pesan = 'Selamat Siang';
+      pesan = 'Buen día';
     } else if (jam >= 4) {
-      pesan = 'Selamat Pagi';
+      pesan = 'Buenos días';
     }
+    
     $('#sapaan').html(pesan);
   }
+  
 
   // show or hide password
   if ($('#password').length > 0) {
@@ -330,24 +336,25 @@ $(document).ready(function () {
 });
 
 // delete action
-function hapus(e, action_url) {
+// acción de eliminar
+function eliminar(e, action_url) {
   e.preventDefault();
   swal({
-    title: 'Anda yakin?',
-    text: 'Sekali dihapus, data tidak akan kembali lagi!',
+    title: '¿Estás seguro?',
+    text: '¡Una vez eliminados, los datos no se podrán recuperar!',
     icon: 'warning',
     buttons: true,
     dangerMode: true,
     buttons: {
       cancel: {
-        text: 'Batal',
+        text: 'Cancelar',
         value: null,
         visible: true,
         className: '',
         closeModal: true,
       },
       confirm: {
-        text: 'Lanjutkan',
+        text: 'Continuar',
       },
     },
   }).then(function (willDelete) {
@@ -355,10 +362,11 @@ function hapus(e, action_url) {
       $('#form-hapus').attr('action', action_url);
       document.getElementById('form-hapus').submit();
     } else {
-      swal('Okay, tidak jadi');
+      swal('Está bien, no se eliminará');
     }
   });
 }
+
 
 function validateEmail(email) {
   var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -547,8 +555,8 @@ $('form')
         $('input[name="' + item + '"]')
           .parent()
           .parent()
-          .after('<div class="invalid-feedback error-checkbox" style="display: block;">' + label + ' tidak boleh kosong</div>');
-      }
+          .after('<div class="invalid-feedback error-checkbox" style="display: block;">' + label + ' no puede estar vacío</div>');
+        }
     });
 
     // checkbox2
@@ -600,7 +608,7 @@ $('form')
         },
         1000
       );
-      errorMsg('Ada yang error pada form, silakan cek kembali!!!');
+      errorMsg('¡Hubo un error en el formulario, por favor verifica nuevamente!');
     }
     // return false;
     return tidakError;

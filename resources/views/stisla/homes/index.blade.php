@@ -19,7 +19,7 @@
               @if (auth()->check())
                 <a class="btn btn-primary" href="{{ route('dashboard.index') }}">Kembali ke {{ __('Dashboard') }}</a>
               @else
-                <a class="btn btn-primary" href="{{ route('login') }}">Masuk</a>
+                <a class="btn btn-primary" href="{{ route('login2') }}">Masuk</a>
                 @if ($_is_active_register_page)
                   &nbsp;
                   atau

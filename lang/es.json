@@ -1,0 +1,19 @@
+{
+    "Add": "Agregar",
+    "Save": "Guardar",
+    "Reset": "Restablecer",
+    "Version": "Versión",
+
+    "Dashboard": "Tablero",
+    "Whats New": "Novedades",
+    "Logout": "Cerrar sesión",
+
+    "success updated": "actualizado con éxito",
+
+    "Settings": "Configuración",
+    "Application Setting": "Configuración de la aplicación",
+    "A menu that provides settings for the application": "Un menú que proporciona configuraciones para la aplicación",
+    "Application Name": "Nombre de la aplicación",
+    "Company Name": "Nombre de la empresa",
+    "Since": "Desde"
+}
